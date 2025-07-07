@@ -20,6 +20,7 @@ from .models import UserProfile
 from .serializers import PrivacySerializer, BlockUserSerializer, UserSerializer
 from .models import Notification
 from .serializers import NotificationSerializer
+from django.core.exceptions import PermissionDenied
 
 
 # -------------------- Auth --------------------
@@ -313,6 +314,25 @@ def search_view(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_notifications(request):
+    user = request.user
     notifications = Notification.objects.filter(user=request.user).order_by('-created_at')
     serializer = NotificationSerializer(notifications, many=True)
     return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def has_unread_notifications(request):
+    has_unread = Notification.objects.filter(user=request.user, is_read=False).exists()
+    return Response({"has_unread": has_unread})
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def mark_notifications_as_read(request):
+    unread = Notification.objects.filter(user=request.user, read=False)
+    count = unread.count()
+    unread.update(read=True)
+
+    return Response({
+        "message": f"{count} notifications marked as read",
+        "success": True
+    })
