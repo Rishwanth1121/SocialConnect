@@ -1,0 +1,153 @@
+/* styles/Login.module.css */
+.container {
+  font-family: 'Inter', sans-serif;
+  height: 100vh;
+  display: flex;
+}
+
+.leftSection {
+  flex: 1;
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px;
+}
+
+.formWrapper {
+  width: 100%;
+  max-width: 350px;
+  text-align: left;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 40px;
+  color: #3f3d56;
+}
+
+.formWrapper h2 {
+  font-size: 32px;
+  margin-bottom: 10px;
+  color: #2f2e41;
+}
+
+.formWrapper p {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+label {
+  font-size: 14px;
+  color: #333;
+}
+
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0 20px 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.formActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.formActions input[type="checkbox"] {
+  margin-right: 5px;
+}
+
+.formActions a {
+  text-decoration: none;
+  color: #6c63ff;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  background-color: #6c63ff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #574fd6;
+}
+
+.googleBtn {
+  background: white;
+  color: #333;
+  border: 1px solid #ccc;
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footerLink {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #555;
+  text-align: center;
+}
+
+.footerLink a {
+  color: #6c63ff;
+  text-decoration: none;
+  margin-left: 5px;
+}
+
+.socialIcons {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.socialIcons a img {
+  transition: transform 0.2s ease;
+}
+
+.socialIcons a:hover img {
+  transform: scale(1.2);
+}
+
+.rightSection {
+  flex: 1;
+  background: #f5f5fc;
+  background-size: cover;
+  background-position: center;
+}
+
+.errorMessage {
+  color: red;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .rightSection {
+    height: 300px;
+  }
+
+  .leftSection {
+    padding: 30px;
+  }
+}

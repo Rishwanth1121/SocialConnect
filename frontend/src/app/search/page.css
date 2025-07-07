@@ -1,0 +1,59 @@
+/* search.css */
+
+form {
+  display: flex;
+  margin-bottom: 1rem;
+}
+
+input[type="text"] {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px 0 0 6px;
+  outline: none;
+}
+
+button[type="submit"] {
+  background-color: #6c63ff;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 0 6px 6px 0;
+  cursor: pointer;
+}
+
+.search-results {
+  margin-top: 1.5rem;
+}
+
+.result-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #ddd;
+  padding: 16px;
+  border-radius: 6px;
+  background-color: #fff;
+  margin-bottom: 1rem;
+}
+
+.result-card img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.result-card .details {
+  flex: 1;
+  margin-left: 16px;
+}
+
+.result-card button {
+  background-color: #6c63ff;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}

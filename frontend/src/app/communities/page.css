@@ -1,0 +1,111 @@
+body {
+        font-family: 'Segoe UI', sans-serif;
+        margin: 0;
+        padding: 20px;
+        position: relative;
+        min-height: 100vh;
+    }
+
+    /* Persistent background */
+    .persistent-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        z-index: -1;
+    }
+
+    /* Animated gradient overlay */
+    .gradient-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(-45deg, #ee775260, #e73c7e60, #23a6d560, #23d5ab60);
+        background-size: 400% 400%;
+        animation: gradient 15s ease infinite;
+        z-index: -1;
+        opacity: 0.3;
+    }
+
+    @keyframes gradient {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    /* Page container */
+    .communities-page-container {
+        position: relative;
+        z-index: 1;
+        max-width: 800px;
+        margin: auto;
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(5px);
+    }
+
+    /* Rest of your existing styles remain exactly the same */
+    .community-card {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        margin-bottom: 20px;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .community-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+    }
+
+    .community-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .community-header img {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #007bff;
+    }
+
+    .community-name {
+        font-size: 1.4rem;
+        font-weight: 600;
+        margin: 0;
+        color: #333;
+    }
+
+    .community-description, .community-purpose {
+        margin-top: 10px;
+        color: #555;
+        line-height: 1.5;
+    }
+
+    .edit-btn {
+        display: inline-block;
+        margin-top: 15px;
+        background: #007bff;
+        color: white;
+        padding: 8px 16px;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background 0.3s ease;
+    }
+
+    .edit-btn:hover {
+        background: #0056b3;
+    }
