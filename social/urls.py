@@ -8,6 +8,7 @@ from .views import MyProfileView, registered_users, search_view
 from .views import delete_account
 from .views import has_unread_notifications, mark_notifications_as_read
 
+print("✅ social.urls loaded")
 
 urlpatterns = [
     path('login/', login_view),
@@ -34,5 +35,5 @@ urlpatterns = [
     path('search', search_view, name='search'),
     path("notifications/", views.get_notifications, name="get-notifications"),
     path('notifications/has_unread/', has_unread_notifications),
-    path('notifications/mark_read/', mark_notifications_as_read),
+    path('notifications/mark_read/', mark_notifications_as_read, name='mark_notifications')
 ]

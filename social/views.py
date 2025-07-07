@@ -328,11 +328,9 @@ def has_unread_notifications(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def mark_notifications_as_read(request):
-    unread = Notification.objects.filter(user=request.user, read=False)
-    count = unread.count()
-    unread.update(read=True)
+    try:
+        Notification.objects.filter(user=request.user, is_read=False).update(is_read=True)
+        return Response({"success": True})
+    except Exception as e:
+        return Response({"success": False, "error": str(e)}, status=500)
 
-    return Response({
-        "message": f"{count} notifications marked as read",
-        "success": True
-    })
