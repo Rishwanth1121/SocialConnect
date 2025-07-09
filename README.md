@@ -86,5 +86,3 @@ http://localhost:8000/api/
 
 
 
-# Run development server
-npm run dev
