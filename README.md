@@ -4,6 +4,20 @@
 
 ---
 
+## ✨ Features
+
+- 🔐 User Authentication (Login, Register, Logout)
+- 👥 Create and Manage Communities
+- 📸 Create Posts with Image Uploads
+- 💬 Comment on Posts
+- 🧑‍💼 Edit & View User Profiles
+- 🔍 Global Search for Users and Communities
+- 🛡️ Block Users and Set Privacy Preferences
+- 🔔 Notification System
+- 📦 Media Upload and Access via Django
+
+---
+
 ## 🚀 Technologies Used
 
 ### 🖥 Frontend:
@@ -22,22 +36,6 @@
 
 ---
 
-## ✨ Features
-
-- 🔐 User Authentication (Login, Register, Logout)
-- 👥 Create and Manage Communities
-- 📸 Create Posts with Image Uploads
-- 💬 Comment on Posts
-- 🧑‍💼 Edit & View User Profiles
-- 🔍 Global Search for Users and Communities
-- 🛡️ Block Users and Set Privacy Preferences
-- 🔔 Notification System
-- 📦 Media Upload and Access via Django
-
----
-
-## 🛠 Setup Instructions
-
 ### ⚙️ Prerequisites:
 - Python 3.10+
 - Node.js 18+
@@ -46,15 +44,17 @@
 
 ---
 
-## 🔧 Backend (Django)
-
+## ⚙️ Setup Instructions
 ```bash
+### 🔧 Backend (Django)
+
 # Navigate to backend directory
 cd social_platform
 
 # Create virtual environment
 python -m venv venv
-venv\Scripts\activate
+venv\Scripts\activate   # On Windows
+# source venv/bin/activate   # On Linux/macOS
 
 # Install dependencies
 pip install -r requirements.txt
@@ -65,19 +65,26 @@ python manage.py migrate
 
 # Run server
 python manage.py runserver
-```` ``` ````
-
----
-
-## 🖥 Frontend (Next.js)
-bash
-Copy
-Edit
-# Navigate to frontend directory
-cd frontend
 
 # Install dependencies
 npm install
+
+
+# Navigate to frontend directory
+cd ../frontend
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+```
+
+🌐 API Base URL
+http://localhost:8000/api/
+
+
 
 # Run development server
 npm run dev
