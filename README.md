@@ -79,6 +79,10 @@ npm install
 # Start development server
 npm run dev
 
+# Steps to access group chat
+
+
+
 ```
 
 🌐 API Base URL
