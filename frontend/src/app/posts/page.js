@@ -10,6 +10,13 @@ export default function Posts() {
   const [image, setImage] = useState(null);
   const [commentTexts, setCommentTexts] = useState({});
 
+  // 🔐 Get CSRF cookie on first load
+  useEffect(() => {
+    fetch('http://localhost:8000/api/csrf/', {
+      credentials: 'include',
+    });
+  }, []);
+
   useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -25,6 +32,12 @@ export default function Posts() {
     fetchPosts();
   }, []);
 
+  const getCookie = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+  };
+
   const handlePostSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -35,8 +48,17 @@ export default function Posts() {
       const res = await fetch('http://localhost:8000/api/posts/create/', {
         method: 'POST',
         credentials: 'include',
+        headers: {
+          'X-CSRFToken': getCookie('csrftoken'),
+        },
         body: formData,
       });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error('❌ Create post error:', errorText);
+        throw new Error('Failed to create post');
+      }
 
       const newPost = await res.json();
       setPosts([newPost, ...posts]);
@@ -52,7 +74,17 @@ export default function Posts() {
       const res = await fetch(`http://localhost:8000/api/posts/${id}/like/`, {
         method: 'POST',
         credentials: 'include',
+        headers: {
+          'X-CSRFToken': getCookie('csrftoken'),
+        },
       });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error(`❌ Like error for post ${id}:`, errorText);
+        return;
+      }
+
       const updated = await res.json();
       setPosts(posts.map((p) => (p.id === id ? updated : p)));
     } catch (err) {
@@ -67,10 +99,20 @@ export default function Posts() {
     try {
       const res = await fetch(`http://localhost:8000/api/posts/${id}/comment/`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken'),
+        },
         credentials: 'include',
         body: JSON.stringify({ text }),
       });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error(`❌ Comment error for post ${id}:`, errorText);
+        return;
+      }
+
       const updated = await res.json();
       setPosts(posts.map((p) => (p.id === id ? updated : p)));
       setCommentTexts({ ...commentTexts, [id]: '' });
@@ -133,8 +175,8 @@ export default function Posts() {
 
           <div className="comments">
             <h4>Comments</h4>
-            {(post.comments || []).map((comment, index) => (
-              <p key={comment.id || `comment-${index}`}>
+            {(post.comments || []).map((comment) => (
+              <p key={`comment-${post.id}-${comment.id}`}>
                 <strong>{comment.user?.username || 'Anonymous'}</strong>: {comment.text}
               </p>
             ))}

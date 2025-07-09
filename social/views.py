@@ -21,6 +21,13 @@ from .serializers import PrivacySerializer, BlockUserSerializer, UserSerializer
 from .models import Notification
 from .serializers import NotificationSerializer
 from django.core.exceptions import PermissionDenied
+from rest_framework.decorators import parser_classes
+from rest_framework.decorators import api_view, permission_classes, parser_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.parsers import MultiPartParser, FormParser
+import traceback
+import json
+from rest_framework.generics import RetrieveAPIView
 
 
 # -------------------- Auth --------------------
@@ -63,21 +70,23 @@ def logout_view(request):
     logout(request)
     return Response({"message": "Logged out successfully."})
 
-@api_view(['GET'])
-def user_view(request):
-    if request.user.is_authenticated:
-        return JsonResponse({'username': request.user.username})
-    else:
-        return JsonResponse({'isAuthenticated': False}, status=401)
-    
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def get_user(request):
-    user = request.user
-    return Response({
-        "username": user.username,
-        "email": user.email,
+def user_view(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'isAuthenticated': False}, status=401)
+
+    return JsonResponse({
+        'id': request.user.id,  # <-- Add this line
+        'username': request.user.username,
+        'email': request.user.email,
     })
+
+@api_view(['GET'])
+def current_user(request):
+    if request.user.is_authenticated:
+        return Response({'id': request.user.id, 'username': request.user.username})
+    return Response({'detail': 'Not authenticated'}, status=403)
+
     
 @api_view(['GET'])
 @permission_classes([AllowAny])  # ← TEMPORARY for testing
@@ -151,22 +160,65 @@ def block_user(request):
 
 # -------------------- Posts --------------------
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_posts(request):
-    posts = Post.objects.select_related('user').order_by('-created_at')
-    serializer = PostSerializer(posts, many=True)
+    posts = Post.objects.all().order_by('-created_at')
+    serializer = PostSerializer(posts, many=True, context={'request': request})
     return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_my_posts(request):
+    user = request.user
+    posts = Post.objects.filter(user=user).order_by('-created_at')
+    serializer = PostSerializer(posts, many=True, context={'request': request})
+    return Response(serializer.data)
+    
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser, FormParser])
+def create_post(request):
+    try:
+        serializer = PostSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            post = serializer.save(user=request.user)
+            post.refresh_from_db()
+            full_serializer = PostSerializer(post, context={'request': request})
+            return Response(full_serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+    except Exception as e:
+        print("🔥 CREATE POST ERROR:", str(e))
+        traceback.print_exc()
+        return Response({'error': 'Server error'}, status=500)
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def create_post(request):
-    parser_classes = (MultiPartParser, FormParser)
-    serializer = PostSerializer(data=request.data, context={'request': request})
-    if serializer.is_valid():
-        post = serializer.save(user=request.user)
-        post.refresh_from_db()
-        full_serializer = PostSerializer(post, context={'request': request})
-        return Response(full_serializer.data, status=201)
-    return Response(serializer.errors, status=400)
+def like_post(request, post_id):
+    try:
+        post = Post.objects.get(id=post_id)
+    except Post.DoesNotExist:
+        return Response({'error': 'Post not found'}, status=404)
+
+    user = request.user
+    liked = False
+
+    if user in post.likes.all():
+        post.likes.remove(user)
+    else:
+        post.likes.add(user)
+        liked = True
+
+        if post.user != user:
+            Notification.objects.create(
+                user=post.user,
+                message=f"{user.username} liked your post."
+            )
+
+    post.save()
+    serializer = PostSerializer(post, context={'request': request})
+    return Response(serializer.data)
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -176,17 +228,36 @@ def add_comment(request, post_id):
     except Post.DoesNotExist:
         return Response({'error': 'Post not found'}, status=404)
 
-    text = request.data.get('text')
+    text = request.data.get('text', '').strip()
     if not text:
-        return Response({'error': 'Comment text is required.'}, status=400)
+        return Response({'error': 'Empty comment'}, status=400)
 
-    Comment.objects.create(post=post, user=request.user, text=text)
-    Notification.objects.create(user=post.user, message=f"{request.user.username} commented on your post.")
-    post.refresh_from_db()
+    comment = Comment.objects.create(post=post, user=request.user, text=text)
+
+    if post.user != request.user:
+        Notification.objects.create(
+            user=post.user,
+            message=f"{request.user.username} commented on your post."
+        )
+
     serializer = PostSerializer(post, context={'request': request})
     return Response(serializer.data)
 
+    
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_post(request, post_id):
+    try:
+        post = Post.objects.get(id=post_id)
 
+        if post.user != request.user:
+            return Response({'error': 'You do not have permission to delete this post.'}, status=403)
+
+        post.delete()
+        return Response({'success': True})
+    except Post.DoesNotExist:
+        return Response({'error': 'Post not found'}, status=404)
+    
 # -------------------- Communities --------------------
 
 @api_view(['GET'])
@@ -246,6 +317,92 @@ class CreateCommunityView(generics.CreateAPIView):
         print("=== create ===")
         print("request.data:", request.data)
         return super().create(request, *args, **kwargs)
+    
+class EditCommunityMembersView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def patch(self, request, pk):
+        community = get_object_or_404(Community, pk=pk)
+
+        if request.user != community.created_by:
+            return Response(
+                {"detail": "Only the community creator can edit members."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        members = request.data.get("members", [])
+
+        if not isinstance(members, list) or not all(isinstance(m, int) for m in members):
+            return Response(
+                {"members": ["Invalid format. Must be a list of user IDs."]},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        users = User.objects.filter(id__in=members)
+        community.members.set(users)
+        community.save()
+
+        Notification.objects.create(
+            user=request.user,
+            message=f"You updated members of community '{community.name}'."
+        )
+
+        serializer = CommunitySerializer(community)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class CommunityDetailView(RetrieveAPIView):
+    queryset = Community.objects.all()
+    serializer_class = CommunitySerializer
+
+@method_decorator(csrf_exempt, name='dispatch')
+class DeleteCommunityView(generics.DestroyAPIView):
+    queryset = Community.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+
+    def delete(self, request, *args, **kwargs):
+        community = self.get_object()
+        if community.created_by != request.user:
+            return Response({'error': 'Not allowed'}, status=403)
+        community.delete()
+        return Response({'message': 'Deleted'}, status=204)
+    
+class EditCommunityView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def patch(self, request, pk):
+        try:
+            community = Community.objects.get(pk=pk)
+            if community.created_by != request.user:
+                return Response({'detail': 'Not authorized'}, status=status.HTTP_403_FORBIDDEN)
+
+            serializer = CommunitySerializer(community, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Community.DoesNotExist:
+            return Response({'detail': 'Community not found'}, status=status.HTTP_404_NOT_FOUND)
+
+class AddCommunityMembersView(generics.UpdateAPIView):
+    queryset = Community.objects.all()
+    serializer_class = CommunitySerializer
+    permission_classes = [IsAuthenticated]
+
+    def update(self, request, *args, **kwargs):
+        community = self.get_object()
+        members = request.data.get('members', [])
+        if isinstance(members, str):
+            try:
+                members = json.loads(members)
+            except:
+                return Response({'error': 'Invalid member list'}, status=400)
+
+        if not isinstance(members, list):
+            return Response({'error': 'Members should be a list'}, status=400)
+
+        community.members.add(*members)
+        return Response({'status': 'Members added successfully'})
+
 
 from django.db.models import Q
 
@@ -258,6 +415,7 @@ class UserCommunitiesView(APIView):
         ).distinct()
         serializer = CommunitySerializer(communities, many=True)
         return Response(serializer.data)
+    
     
 class MyProfileView(APIView):
     parser_classes = [MultiPartParser, FormParser]

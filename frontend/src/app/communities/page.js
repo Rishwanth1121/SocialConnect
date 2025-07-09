@@ -2,12 +2,34 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import './page.css'
 
 export default function CommunitiesPage() {
   const [communities, setCommunities] = useState([])
+  const [userId, setUserId] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [dropdownOpen, setDropdownOpen] = useState(null)
+  const router = useRouter()
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch('http://localhost:8000/api/current_user/', {
+          credentials: 'include',
+        })
+        if (res.ok) {
+          const data = await res.json()
+          setUserId(data.id)
+        }
+      } catch (err) {
+        console.error('Failed to fetch user', err)
+      }
+    }
+
+    fetchUser()
+  }, [])
 
   useEffect(() => {
     const fetchCommunities = async () => {
@@ -15,9 +37,7 @@ export default function CommunitiesPage() {
         const res = await fetch('http://localhost:8000/api/communities/user/', {
           credentials: 'include',
         })
-
         if (!res.ok) throw new Error('Failed to fetch communities')
-
         const data = await res.json()
         setCommunities(Array.isArray(data) ? data : [])
       } catch (err) {
@@ -31,16 +51,45 @@ export default function CommunitiesPage() {
     fetchCommunities()
   }, [])
 
+  const toggleDropdown = (communityId) => {
+    setDropdownOpen(dropdownOpen === communityId ? null : communityId)
+  }
+
+  const getCSRFToken = () => {
+    const match = document.cookie.match(/csrftoken=([\w-]+)/)
+    return match ? match[1] : ''
+  }
+
+  const handleDelete = async (communityId) => {
+    try {
+      const csrfToken = getCSRFToken()
+      const res = await fetch(`http://localhost:8000/api/communities/${communityId}/delete/`, {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: {
+          'X-CSRFToken': csrfToken,
+        },
+      })
+
+      if (res.ok) {
+        setCommunities(prev => prev.filter(c => c.id !== communityId))
+      } else {
+        throw new Error('Delete failed')
+      }
+    } catch (err) {
+      console.error('Delete error:', err)
+      alert('Failed to delete community.')
+    }
+  }
+
   const isCreator = (community) => {
-    // Adjust the condition as per your auth logic
-    return community?.created_by?.id === 1
+    return community?.created_by?.id === userId
   }
 
   return (
     <div className="container">
-      <h2 className="text-center">Your Communities</h2>
-
-      <div className="text-right mb-4">
+      <div className="header-row">
+        <h2>Your Communities</h2>
         <Link href="/communities/create_community" className="create-btn">
           ➕ Create a Community
         </Link>
@@ -53,11 +102,40 @@ export default function CommunitiesPage() {
       ) : communities.length > 0 ? (
         communities.map((community) => (
           <div key={community.id} className="community-card">
-            <h3>
-              <Link href={`/communities/${community.id}/chat`}>
-                {community.name}
-              </Link>
-            </h3>
+            {isCreator(community) && (
+              <div className="dropdown-wrapper">
+                <button
+                  className="dots-button"
+                  onClick={() => toggleDropdown(community.id)}
+                >
+                  ⋮
+                </button>
+                {dropdownOpen === community.id && (
+                  <div className="community-dropdown-menu">
+                    <Link href={`/communities/${community.id}/edit_members`}>Edit Members</Link>
+                    <Link href={`/communities/${community.id}/edit`}>Edit Profile</Link>
+                    <button onClick={() => handleDelete(community.id)}>Delete Community</button>
+                  </div>
+                )}
+              </div>
+            )}
+            <div className="community-header">
+              <img
+                src={
+                  community.profile_photo
+                    ? `http://localhost:8000${community.profile_photo}`
+                    : '/default_community.jpg'
+                }
+                alt="Community"
+                className="community-image"
+                onError={(e) => { e.target.src = '/default_community.jpg' }}
+              />
+              <h3>
+                <Link href={`/communities/${community.id}/chat`}>
+                  {community.name}
+                </Link>
+              </h3>
+            </div>
             <p>{community.description}</p>
             <p>
               <strong>Members:</strong>{' '}
@@ -65,11 +143,6 @@ export default function CommunitiesPage() {
                 ? community.members_info.map((m) => m.username).join(', ')
                 : 'No members'}
             </p>
-            {isCreator(community) && (
-              <Link href={`/communities/${community.id}/add-members`}>
-                ➕ Add Members
-              </Link>
-            )}
           </div>
         ))
       ) : (

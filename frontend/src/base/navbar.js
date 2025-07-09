@@ -60,7 +60,8 @@ export default function Navbar({ profileImage }) {
 
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (isDropdownOpen && !e.target.closest('.profile-dropdown')) {
+      const wrapper = document.querySelector('.profile-wrapper');
+      if (isDropdownOpen && wrapper && !wrapper.contains(e.target)) {
         closeDropdown();
       }
     };
@@ -94,9 +95,9 @@ export default function Navbar({ profileImage }) {
           <>
             <Link href="/notifications" className="notification-icon">
               <i className="fas fa-bell"></i>
-              {hasUnread && <span className="notification-badge-dot" />} {/* Red Dot */}
+              {hasUnread && <span className="notification-badge-dot" />}
             </Link>
-            <div className="profile-dropdown">
+            <div className="profile-wrapper">
               <img
                 src={profileImage || '/images/default-profile.png'}
                 alt="Profile"
@@ -106,7 +107,7 @@ export default function Navbar({ profileImage }) {
               <div className={`dropdown-menu ${isDropdownOpen ? 'show' : ''}`}>
                 <Link href="/profile"><i className="fas fa-user"></i> Profile</Link>
                 <Link href="/settings"><i className="fas fa-cog"></i> Settings</Link>
-                <Link href="/my-posts"><i className="fas fa-file-alt"></i> My Posts</Link>
+                <Link href="/myposts"><i className="fas fa-file-alt"></i> My Posts</Link>
                 <Link href="/users"><i className="fas fa-user-friends"></i> Users</Link>
                 <button onClick={handleLogout} className="logout-button">
                   <i className="fas fa-sign-out-alt"></i> Logout

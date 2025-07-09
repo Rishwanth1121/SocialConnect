@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from .models import Community
 from .models import Profile
 from .models import UserProfile, Notification
+from django.contrib.auth.models import User
 
 User = get_user_model()
 
@@ -22,51 +23,54 @@ class ProfileSerializer(serializers.ModelSerializer):
             'facebook', 'twitter', 'instagram', 'linkedin'
         ]
 
+
 class CommentSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
+    user = serializers.SerializerMethodField()
 
     class Meta:
         model = Comment
-        fields = ['id', 'user', 'text']
+        fields = ['id', 'user', 'text', 'created_at']
+
+    def get_user(self, obj):
+        return {'username': obj.user.username}
 
 class PostSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
+    user = serializers.SerializerMethodField()
     comments = CommentSerializer(many=True, read_only=True)
     likes_count = serializers.SerializerMethodField()
     is_liked = serializers.SerializerMethodField()
-    image = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
         fields = ['id', 'user', 'content', 'image', 'created_at', 'likes_count', 'is_liked', 'comments']
+
+    def get_user(self, obj):
+        return {'username': obj.user.username}
 
     def get_likes_count(self, obj):
         return obj.likes.count()
 
     def get_is_liked(self, obj):
         request = self.context.get('request')
-        return request.user in obj.likes.all() if request and request.user.is_authenticated else False
+        if request and request.user.is_authenticated:
+            return request.user in obj.likes.all()
+        return False
 
-    def get_image(self, obj):
-        request = self.context.get('request')
-        if obj.image and hasattr(obj.image, 'url'):
-            return request.build_absolute_uri(obj.image.url) if request else obj.image.url
-        return None
 
 class CommunitySerializer(serializers.ModelSerializer):
-    # Accept user IDs when writing
     members = serializers.PrimaryKeyRelatedField(
         many=True, queryset=User.objects.all(), write_only=True
     )
-    # Show full user data when reading
     members_info = UserSerializer(source='members', many=True, read_only=True)
     created_by = UserSerializer(read_only=True)
+    image = serializers.ImageField(source='profile_photo', read_only=True)  # 👈 Add this
 
     class Meta:
         model = Community
         fields = [
             'id', 'name', 'description', 'purpose',
-            'profile_photo', 'created_by', 'members', 'members_info'
+            'profile_photo', 'image',  # 👈 Include both
+            'created_by', 'members', 'members_info'
         ]
 
     def create(self, validated_data):
@@ -96,3 +100,4 @@ class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
         fields = ['id', 'message', 'is_read', 'created_at']
+
