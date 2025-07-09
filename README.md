@@ -1,6 +1,6 @@
-# 🧠 Workcohol – A Community-Based Social Platform
+# 🧠 SocialConnect – A Community-Based Social Platform
 
-**Workcohol** is a full-stack community-centric social media platform designed to connect like-minded individuals. Developed using **Django (REST Framework)** and **Next.js**, this platform supports features like posting content, managing user profiles, joining communities, commenting, and real-time notifications.
+**SocialConnect** is a full-stack community-centric social media platform designed to connect like-minded individuals. Developed using **Django (REST Framework)** and **Next.js**, this platform supports features like posting content, managing user profiles, joining communities, commenting, and real-time notifications.
 
 ---
 
