@@ -65,3 +65,18 @@ python manage.py migrate
 
 # Run server
 python manage.py runserver
+
+---
+
+## 🖥 Frontend (Next.js)
+bash
+Copy
+Edit
+# Navigate to frontend directory
+cd frontend
+
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
