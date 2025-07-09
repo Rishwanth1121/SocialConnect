@@ -17,13 +17,11 @@ export default function CommunityChatPage() {
       credentials: 'include',
     })
       .then(res => res.json())
-      .then(data => {
-        setUsername(data.username);
-      })
+      .then(data => setUsername(data.username))
       .catch(err => console.error('Failed to fetch user', err));
   }, []);
 
-  // Load old messages from backend
+  // Load old messages
   useEffect(() => {
     const fetchMessages = async () => {
       try {
@@ -59,7 +57,7 @@ export default function CommunityChatPage() {
     };
   }, [id]);
 
-  // Send a new message
+  // Send message
   const sendMessage = (e) => {
     e.preventDefault();
     if (message.trim() === '' || !username) return;
@@ -77,12 +75,14 @@ export default function CommunityChatPage() {
       <h2>Community Chat</h2>
 
       <div className="messages">
-        {messages.map((msg, i) => (
+        {messages.map((msg, index) => (
           <div
-            key={i}
-            className={`message ${msg.username === username ? 'own' : ''}`}
+            key={index}
+            className={`message-container ${msg.sender === username ? 'own-message' : 'other-message'}`}
           >
-            <strong>{msg.username}:</strong> {msg.message}
+            <div className="message-bubble">
+              <strong>{msg.sender}:</strong> {msg.message}
+            </div>
           </div>
         ))}
       </div>

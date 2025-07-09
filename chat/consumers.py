@@ -1,15 +1,11 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
-from django.contrib.auth.models import AnonymousUser
 from channels.db import database_sync_to_async
-from .models import ChatMessage
-from social.models import Community  # assuming your Community model is in `social`
 
 class CommunityChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.community_id = self.scope['url_route']['kwargs']['community_id']
         self.room_group_name = f'community_chat_{self.community_id}'
-
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.accept()
 
@@ -18,10 +14,9 @@ class CommunityChatConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         data = json.loads(text_data)
-        message = data['message']
-        user = self.scope["user"]
-
-        username = user.username if user and not isinstance(user, AnonymousUser) else 'Anonymous'
+        message = data.get('message')
+        username = data.get('username', 'Anonymous')
+        user = self.scope['user']
 
         await self.save_message(user, self.community_id, message)
 
@@ -42,12 +37,15 @@ class CommunityChatConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def save_message(self, user, community_id, message):
+        from .models import ChatMessage
+        from social.models import Community
+        from django.contrib.auth.models import AnonymousUser  # ✅ moved here
+
+        if isinstance(user, AnonymousUser):
+            user = None
+
         try:
             community = Community.objects.get(id=community_id)
-            ChatMessage.objects.create(
-                sender=user if user and not isinstance(user, AnonymousUser) else None,
-                community=community,
-                message=message
-            )
+            ChatMessage.objects.create(sender=user, community=community, message=message)
         except Community.DoesNotExist:
-            pass  # Optional: log or handle this
+            pass

@@ -10,16 +10,40 @@
   max-height: 400px;
   overflow-y: auto;
   margin-bottom: 15px;
-  border: 1px solid #ddd;
   padding: 10px;
+  border: 1px solid #ddd;
   background-color: #f8f8f8;
 }
 
-.message {
-  padding: 6px 0;
-  border-bottom: 1px solid #eee;
+/* Message alignment */
+.message-container {
+  display: flex;
+  margin: 5px 0;
 }
 
+.own-message {
+  justify-content: flex-end;
+}
+
+.other-message {
+  justify-content: flex-start;
+}
+
+/* Message bubble */
+.message-bubble {
+  background-color: #e6f7ff;
+  padding: 10px;
+  border-radius: 10px;
+  max-width: 60%;
+  word-wrap: break-word;
+}
+
+.own-message .message-bubble {
+  background-color: #d2f8d2;
+  text-align: right;
+}
+
+/* Chat form */
 .chat-form {
   display: flex;
   gap: 10px;
@@ -39,9 +63,4 @@
   color: white;
   border-radius: 6px;
   cursor: pointer;
-}
-
-.message.own {
-  background-color: #e6f7ff;
-  border-left: 4px solid #1890ff;
 }

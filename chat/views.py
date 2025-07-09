@@ -1,17 +1,10 @@
-from rest_framework import generics, permissions
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from .models import ChatMessage
 from .serializers import ChatMessageSerializer
-from social.models import Community
 
-class CommunityChatMessagesView(generics.ListCreateAPIView):
-    serializer_class = ChatMessageSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        community_id = self.kwargs['pk']
-        return ChatMessage.objects.filter(community_id=community_id).order_by('timestamp')
-
-    def perform_create(self, serializer):
-        community_id = self.kwargs['pk']
-        community = Community.objects.get(id=community_id)
-        serializer.save(user=self.request.user, community=community)
+class CommunityChatMessagesView(APIView):
+    def get(self, request, pk):
+        messages = ChatMessage.objects.filter(community_id=pk).order_by('timestamp')
+        serializer = ChatMessageSerializer(messages, many=True)
+        return Response(serializer.data)
