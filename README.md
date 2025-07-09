@@ -16,6 +16,8 @@
 - 🔔 Notification System
 - 📦 Media Upload and Access via Django
 
+![image](https://github.com/user-attachments/assets/ab7fa451-2d9a-4608-8bc5-56a096100621)
+
 ---
 
 ## 🚀 Technologies Used
