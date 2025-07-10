@@ -6,15 +6,24 @@
 
 ## ✨ Features
 
-- 🔐 User Authentication (Login, Register, Logout)
-- 👥 Create and Manage Communities
-- 📸 Create Posts with Image Uploads
-- 💬 Comment on Posts
-- 🧑‍💼 Edit & View User Profiles
-- 🔍 Global Search for Users and Communities
-- 🛡️ Block Users and Set Privacy Preferences
-- 🔔 Notification System
-- 📦 Media Upload and Access via Django
+- 🔐 User Authentication (Register, Login, Logout)
+- 👥 Community Creation, Editing & Member Management
+- 📸 Post Creation with Image Uploads
+- 💬 Commenting, Liking Posts
+- 🧑 Profile View & Edit with Profile Picture Upload
+- 🔍 Global Search (Users, Communities)
+- 🧾 Friend Request System (Send, Accept, Cancel, Remove)
+- 🔔 Smart Notification System for All Activities
+- 💬 Group and Private Chat (Text + Voice Support)
+- 📦 Django-Based Media Handling
+- 🛡️ Block Users, Set Profile & Post Privacy
+
+---
+
+## 📁 Folder Structure
+
+
+
 
 ---
 
@@ -89,4 +98,5 @@ npm run dev
 http://localhost:8000/api/
 
 
+![Home Page](./frontend/public/images/home-bg.jpg)
 

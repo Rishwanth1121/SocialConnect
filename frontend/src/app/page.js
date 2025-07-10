@@ -65,90 +65,56 @@ function HomePageContent({ posts = [] }) {
     </div>
   </section>
 
-  {/* DASHBOARD */}
-  <section className="dashboard">
-    <div className="dashboardContainer">
-      <div className="feed">
-        <h2>Community Activity</h2>
-        {posts.length > 0 ? (
-          posts.map((post) => (
-            <div className="post" key={post.id}>
-              <div className="postHeader">
-                <div className="postUser">
-                  {post.user.username.slice(0, 1).toUpperCase()}
-                </div>
-                <div>
-                  <h4>@{post.user.username}</h4>
-                  <div className="postTime">{post.created_at} ago</div>
-                </div>
-              </div>
-              <div className="postContent">
-                <p>{post.content}</p>
-              </div>
-              {post.image && (
-                <img src={post.image.url} alt="Post image" className="postImage" />
-              )}
-            </div>
-          ))
-        ) : (
-          <div className="emptyFeed">
-            <p>No posts yet. Be the first to share something!</p>
-            <Link href="/posts" className="btn">Create Post</Link>
-          </div>
-        )}
+<section className="dashboard">
+  <div className="dashboardContainer">
+    <div className="sidebar">
+      {/* Discover More */}
+      <div className="card">
+        <h3>Discover More</h3>
+        <form method="get" action="/search" className="searchBox">
+          <input type="text" name="q" placeholder="Search users, posts, groups..." />
+        </form>
       </div>
 
-      <div className="sidebar">
-        <div className="card">
-          <h3>Discover More</h3>
-          <form method="get" action="/search" className="searchBox">
-            <input type="text" name="q" placeholder="Search users, posts, groups..." />
-          </form>
-        </div>
-
-        <div className="card">
-          <h3>Trending Topics</h3>
-          <ul className="trendingList">
-            <li><Link href="#">Technology</Link></li>
-            <li><Link href="#">StartupLife</Link></li>
-            <li><Link href="#">Photography</Link></li>
-            <li><Link href="#">RemoteWork</Link></li>
-            <li><Link href="#">Sustainability</Link></li>
-          </ul>
-        </div>
-
-        <div className="card">
-          <h3>Community Stats</h3>
-          <div className="statsGrid">
-            <div className="statItem">
-              <div className="statNumber">1.2K</div>
-              <div className="statLabel">Members</div>
-            </div>
-            <div className="statItem">
-              <div className="statNumber">543</div>
-              <div className="statLabel">Posts</div>
-            </div>
-            <div className="statItem">
-              <div className="statNumber">87</div>
-              <div className="statLabel">Groups</div>
-            </div>
-            <div className="statItem">
-              <div className="statNumber">24</div>
-              <div className="statLabel">Events</div>
-            </div>
-          </div>
-        </div>
+      {/* Trending Topics */}
+      <div className="card">
+        <h3>Trending Topics</h3>
+        <ul className="trendingList">
+          <li><Link href="#">TechTalk</Link></li>
+          <li><Link href="#">CreatorsHub</Link></li>
+          <li><Link href="#">RemoteLife</Link></li>
+          <li><Link href="#">BuildTogether</Link></li>
+          <li><Link href="#">MindfulGrowth</Link></li>
+        </ul>
       </div>
+
+      {/* Community Image Banner */}
+      <div className="card adCard">
+  <div style={{ textAlign: 'center' }}>
+    <img src="/images/comm.png" alt="Join the community" style={{ maxWidth: '100%', borderRadius: '8px' }} />
+    <h4 style={{ marginTop: '1rem', fontSize: '1.1rem' }}>Grow Together</h4>
+    <p style={{ fontSize: '0.95rem', color: '#555' }}>
+      Discover inspiring groups, join vibrant discussions, and grow your network.
+    </p>
+    <Link href="/communities" className="btn" style={{ marginTop: '0.5rem' }}>
+      Join Now
+    </Link>
+  </div>
+</div>
+
+
     </div>
-  </section>
+  </div>
+</section>
+
 
   {/* NEW SECTIONS */}
   <section className="vision">
     <div className="container">
       <h2>Empowering Meaningful Connections</h2>
       <p>
-        Our platform is more than just a space—it's a movement to connect people with purpose.
-        We believe in nurturing knowledge-sharing, collaboration, and social growth in a unified digital environment.
+        Our platform is more than just a space, it's a movement to connect people with purpose.
+        We believe in nurturing knowledge, sharing, collaboration, and social growth in a unified digital environment.
       </p>
     </div>
   </section>
@@ -178,28 +144,30 @@ function HomePageContent({ posts = [] }) {
   </section>
 
   <section className="highlightFeatures">
-    <div className="container">
-      <h2>Platform Highlights</h2>
-      <ul>
-        <li>🧠 Structured spaces with roles, permissions, and group visibility</li>
-        <li>💼 Built-in analytics to track engagement and growth</li>
-        <li>🔗 Deep integrations with Slack, Discord, Zapier, and more</li>
-        <li>🧩 Fully customizable appearance to match your brand</li>
-        <li>🌎 Public, private, and secret communities</li>
-      </ul>
-    </div>
-  </section>
+  <div className="container">
+    <h2>Platform Highlights</h2>
+    <ul>
+      <li>🧠 Group-based spaces with role-based access and community visibility</li>
+      <li>💬 Real-time group and private messaging </li>
+      <li>👥 Friend system with requests, acceptance, and friend list management</li>
+      <li>📸 Multimedia posts with images, likes, and comments</li>
+      <li>🔒 Privacy controls: profile/post visibility, block users, private mode</li>
+      <li>🔔 Real-time notifications for requests, posts, and community updates</li>
+    </ul>
+  </div>
+</section>
+
 
   <section className="testimonials">
     <div className="container">
-      <h2>What Our Community Says</h2>
+      <h2>What Our Community Users Say</h2>
       <div className="testimonialCard">
         <p>“This platform has transformed how I interact with my audience. It’s clean, powerful, and truly community-focused.”</p>
-        <span>- Aarya, Creator</span>
+        <span>- Rishwanth, Creator</span>
       </div>
       <div className="testimonialCard">
         <p>“Our startup grew engagement by 3x since moving our community here. Highly recommend!”</p>
-        <span>- Rahul, SaaS Founder</span>
+        <span>- Gowtham, SaaS Founder</span>
       </div>
     </div>
   </section>
@@ -207,8 +175,8 @@ function HomePageContent({ posts = [] }) {
   <section className="integrations">
     <div className="container">
       <h2>Integrates With Your Workflow</h2>
-      <p>Connect with tools you already use like Zoom, Slack, Google Calendar, Notion, and more.</p>
-      <img src="/images/integrations.png" alt="Integrations" style={{ maxWidth: '100%', marginTop: '1rem' }} />
+      <p>Connect with tools you already enjoy using.</p>
+      <img src="/images/integrations.png" alt="Integrations" style={{ maxWidth: '30%', marginTop: '1rem' }} />
     </div>
   </section>
 
@@ -221,15 +189,15 @@ function HomePageContent({ posts = [] }) {
   </section>
 
   <footer className="footer">
-    <div className="container">
-      <p>© 2025 SocialConnect. Built with ❤️</p>
-      <div className="footerLinks">
-        <Link href="/about">About</Link>
-        <Link href="/help-support">Help & Support</Link>
-        <Link href="/settings">Settings</Link>
-      </div>
+  <div className="container">
+    <p>© 2025 SocialConnect. Built with ❤️</p>
+    <div className="footerLinks">
+      <Link href="/settings/about">About</Link>
+      <Link href="/settings/help-support">Help & Support</Link>
+      <Link href="/settings">Settings</Link>
     </div>
-  </footer>
+  </div>
+</footer>
 </>
 
   );
