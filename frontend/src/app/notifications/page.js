@@ -1,27 +1,18 @@
 "use client";
 
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-
-// Helper function to get CSRF token from cookies
-function getCookie(name) {
-  let cookieValue = null;
-  if (typeof document !== 'undefined' && document.cookie) {
-    const cookies = document.cookie.split(';');
-    for (let cookie of cookies) {
-      const trimmed = cookie.trim();
-      if (trimmed.startsWith(name + '=')) {
-        cookieValue = decodeURIComponent(trimmed.substring(name.length + 1));
-        break;
-      }
-    }
-  }
-  return cookieValue;
-}
+import { useEffect, useState } from "react";
+import axios from "axios";
+import './page.css';
 
 export default function NotificationsPage() {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const getCookie = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+  };
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -30,19 +21,6 @@ export default function NotificationsPage() {
           withCredentials: true,
         });
         setNotifications(res.data);
-
-        // Mark all notifications as read
-        const csrfToken = getCookie('csrftoken');
-        await axios.post(
-          "http://localhost:8000/api/notifications/mark_read/",
-          {},
-          {
-            headers: {
-              'X-CSRFToken': csrfToken,
-            },
-            withCredentials: true,
-          }
-        );
       } catch (err) {
         console.error("Failed to fetch notifications", err);
       } finally {
@@ -53,21 +31,57 @@ export default function NotificationsPage() {
     fetchNotifications();
   }, []);
 
+  const respondToRequest = async (requestId, accepted) => {
+  const csrfToken = getCookie('csrftoken');
+  try {
+    const res = await axios.post(
+      `http://localhost:8000/api/friends/respond/${requestId}/`,
+      { action: accepted ? "accept" : "cancel" },
+      {
+        headers: { 'X-CSRFToken': csrfToken },
+        withCredentials: true,
+      }
+    );
+
+    alert(res.data.message); // ✅ Shows "Friend request accepted."
+
+    setNotifications((prev) =>
+      prev.filter((n) => n.request_id !== requestId)
+    );
+  } catch (err) {
+    console.error("Failed to respond to request", err);
+  }
+};
+
+
   return (
-    <div style={{ maxWidth: "700px", margin: "auto", padding: "2rem" }}>
+    <div className="notifications-container">
       <h2>Notifications</h2>
       {loading ? (
         <p>Loading...</p>
       ) : notifications.length === 0 ? (
-        <p>No notifications.</p>
+        <p>No notifications</p>
       ) : (
         notifications.map((n) => (
-          <div key={n.id} style={{
-            padding: "1rem",
-            borderBottom: "1px solid #ddd"
-          }}>
+          <div key={n.id} className="notification-card">
             <p>{n.message}</p>
-            <small style={{ color: "#666" }}>{new Date(n.created_at).toLocaleString()}</small>
+
+            {n.type === 'friend_request' && n.request_id && (
+              <div className="friend-request-actions">
+                <button
+                  onClick={() => respondToRequest(n.request_id, true)}
+                  className="accept-btn"
+                >
+                  Accept
+                </button>
+                <button
+                  onClick={() => respondToRequest(n.request_id, false)}
+                  className="cancel-btn"
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
           </div>
         ))
       )}

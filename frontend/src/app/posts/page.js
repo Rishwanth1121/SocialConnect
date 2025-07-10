@@ -1,8 +1,7 @@
 'use client';
-
+import './page.css';
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
-import './page.css';
 
 export default function Posts() {
   const [posts, setPosts] = useState([]);
@@ -155,7 +154,8 @@ export default function Posts() {
       {posts.map((post) => (
         <div className="post" key={post.id} id={`post${post.id}`}>
           <strong>{post.user?.username || 'Anonymous'}</strong>
-          <small>{formatTime(post.created_at)}</small>
+<small style={{ marginLeft: '8px' }}>{formatTime(post.created_at)}</small>
+
           <p>{post.content}</p>
           {post.image && <img src={post.image} className="postImage" alt="post" />}
 

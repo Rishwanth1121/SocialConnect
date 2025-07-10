@@ -39,8 +39,8 @@ export default function LoginPage() {
       </Head>
 
       <div className="leftSection">
-        <div className="formWrapper">
-          <div className="logo">GET 2 GETHER</div>
+  <div className="logo topLeft">SocialConnect</div>
+  <div className="formWrapper">
           <h2>Welcome</h2>
           <p>Please enter your details:</p>
 
@@ -81,7 +81,7 @@ export default function LoginPage() {
                 width={18} 
                 height={18} 
               /> 
-              Sign in with Google
+               Sign in with Google
             </button>
           </form>
 
@@ -106,7 +106,8 @@ export default function LoginPage() {
 
       <div 
         className="rightSection"
-        style={{ backgroundImage: "url('/images/login_illustration.png')" }}
+        style={{ backgroundImage: "url('/images/login.jpg')" // RIGHT
+ }}
       />
     </div>
   );

@@ -1,13 +1,13 @@
 "use client";
-
+import './page.css';
 import { useState, useEffect } from "react";
 import axios from "axios";
-import './page.css';
 
 export default function SearchPage() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [sentRequests, setSentRequests] = useState(new Set());
+  const [friendIds, setFriendIds] = useState(new Set());
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -17,18 +17,38 @@ export default function SearchPage() {
       setQuery(searchQuery);
       handleSearch(searchQuery);
     }
+
+    fetchFriendsList();  // fetch existing friends initially
   }, []);
+
+  const getCSRFToken = () => {
+    const match = document.cookie.match(/csrftoken=([\w-]+)/);
+    return match ? match[1] : '';
+  };
+
+  const fetchFriendsList = async () => {
+    try {
+      const res = await axios.get("http://localhost:8000/api/friends/list/", {
+        withCredentials: true,
+      });
+      const ids = res.data.map(friend => friend.id);
+      setFriendIds(new Set(ids));
+    } catch (err) {
+      console.error("Error fetching friends list:", err);
+    }
+  };
 
   const handleSearch = async (searchQuery) => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`http://localhost:8000/api/search?q=${searchQuery}`);
-      const data = response.data;
+      const response = await axios.get(`http://localhost:8000/api/search?q=${searchQuery}`, {
+        withCredentials: true,
+      });
 
+      const data = response.data;
       const users = data.users || [];
       const communities = data.communities || [];
 
-      // Add type identifier for rendering
       const processedUsers = users.map(user => ({
         ...user,
         type: "user"
@@ -58,7 +78,18 @@ export default function SearchPage() {
 
   const sendFriendRequest = async (userId) => {
     try {
-      await axios.post("http://localhost:8000/api/friends/request", { user_id: userId });
+      const csrfToken = getCSRFToken();
+      await axios.post(
+        "http://localhost:8000/api/friends/request/",
+        { user_id: userId },
+        {
+          headers: {
+            "X-CSRFToken": csrfToken,
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
       setSentRequests((prev) => new Set(prev).add(userId));
     } catch (err) {
       console.error("Friend request failed:", err);
@@ -126,7 +157,9 @@ export default function SearchPage() {
             </div>
 
             {item.type === "user" ? (
-              sentRequests.has(item.id) ? (
+              friendIds.has(item.id) ? (
+                <span style={{ color: "#6c63ff", fontWeight: "bold" }}>Friends</span>
+              ) : sentRequests.has(item.id) ? (
                 <span style={{ color: "green" }}>Request Sent</span>
               ) : (
                 <button

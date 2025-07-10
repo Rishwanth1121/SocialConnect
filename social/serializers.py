@@ -5,13 +5,14 @@ from .models import Community
 from .models import Profile
 from .models import UserProfile, Notification
 from django.contrib.auth.models import User
+from .models import FriendRequest
 
 User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username']
+        fields = ['id', 'username', 'email']
 
 class ProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
@@ -20,7 +21,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile
         fields = [
             'user', 'profile_image', 'role',
-            'facebook', 'twitter', 'instagram', 'linkedin'
+            'facebook', 'twitter', 'instagram', 'linkedin', 'friends'
         ]
 
 
@@ -63,14 +64,13 @@ class CommunitySerializer(serializers.ModelSerializer):
     )
     members_info = UserSerializer(source='members', many=True, read_only=True)
     created_by = UserSerializer(read_only=True)
-    image = serializers.ImageField(source='profile_photo', read_only=True)  # 👈 Add this
+    profile_photo = serializers.ImageField(use_url=True, required=False)  # ✅ key line
 
     class Meta:
         model = Community
         fields = [
             'id', 'name', 'description', 'purpose',
-            'profile_photo', 'image',  # 👈 Include both
-            'created_by', 'members', 'members_info'
+            'profile_photo', 'created_by', 'members', 'members_info'
         ]
 
     def create(self, validated_data):
@@ -88,6 +88,7 @@ class CommunitySerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+
 class PrivacySerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
@@ -99,5 +100,11 @@ class BlockUserSerializer(serializers.Serializer):
 class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
-        fields = ['id', 'message', 'is_read', 'created_at']
+        fields = ['id', 'message', 'is_read', 'created_at', 'type', 'request_id']
+
+class FriendRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FriendRequest
+        fields = ['id', 'sender', 'receiver', 'is_active', 'timestamp']
+        read_only_fields = ['sender', 'timestamp']
 

@@ -1,161 +1,237 @@
 'use client';
+import './globals.css';
 import Head from 'next/head';
 import Link from 'next/link';
-import './globals.css';
 import Navbar from '@/base/navbar';
 import AuthGuard from "@/base/AuthGuard";
 
-// ⛔ Don't export this directly
 function HomePageContent({ posts = [] }) {
   return (
     <>
-      <Head>
-        <title>Connect, Share, and Grow Together</title>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
-        <link
-          rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
-        />
-      </Head>
+  <Head>
+    <title>Connect, Share, and Grow Together</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+  </Head>
 
-      <section className="hero">
-        <div className="heroContent">
-          <h1>Connect, Share, and Grow Together</h1>
-          <p>
-            Join a vibrant community where ideas flourish and connections matter. Engage in meaningful
-            discussions, create inspiring content, and build relationships that last.
-          </p>
-          <div className="heroButtons">
-            <Link href="/communities/create_community" className="btn">Get Started</Link>
-            <Link href="#features" className="btn btnOutline">Learn More</Link>
-          </div>
-        </div>
-      </section>
+  {/* HERO */}
+  <section className="hero">
+    <div className="heroContent">
+      <h1>Connect, Share, and Grow Together</h1>
+      <p>
+        Join a vibrant community where ideas flourish and connections matter.
+        Engage in meaningful discussions, create inspiring content, and build relationships that last.
+      </p>
+      <div className="heroButtons">
+        <Link href="/communities/create_community" className="btn">Get Started</Link>
+        <Link href="#features" className="btn btnOutline">Learn More</Link>
+      </div>
+    </div>
+  </section>
 
-      <section className="features" id="features">
-        <div className="sectionTitle">
-          <h2>Why Our Community Stands Out</h2>
-          <p>Discover features designed to enhance your social experience and foster genuine connections</p>
-        </div>
-        <div className="featuresGrid">
-          <div className="featureCard">
-            <div className="featureIcon">
-              <i className="fas fa-edit"></i>
-            </div>
-            <h3>Create Posts</h3>
-            <p>
-              Share your thoughts, ideas, and updates with a community that cares. Rich formatting and media
-              support included.
-            </p>
-          </div>
-          <div className="featureCard">
-            <div className="featureIcon">
-              <i className="fas fa-comments"></i>
-            </div>
-            <h3>Live Group Chat</h3>
-            <p>
-              Real-time conversations with multiple users. Perfect for discussions, events, and spontaneous
-              chats.
-            </p>
-          </div>
-          <div className="featureCard">
-            <div className="featureIcon">
-              <i className="fas fa-users"></i>
-            </div>
-            <h3>Member Directory</h3>
-            <p>
-              Discover and connect with like-minded individuals. Filter by interests, skills, and location.
-            </p>
-          </div>
-          <div className="featureCard">
-            <div className="featureIcon">
-              <i className="fas fa-images"></i>
-            </div>
-            <h3>Multimedia Support</h3>
-            <p>Share images, videos, and documents. Visual storytelling made simple and beautiful.</p>
-          </div>
-        </div>
-      </section>
+  {/* FEATURES */}
+  <section className="features" id="features">
+    <div className="sectionTitle">
+      <h2>Why Our Community Stands Out</h2>
+      <p>Discover features designed to enhance your social experience and foster genuine connections</p>
+    </div>
+    <div className="featuresGrid">
+      <div className="featureCard">
+        <div className="featureIcon"><i className="fas fa-edit"></i></div>
+        <h3>Create Posts</h3>
+        <p>Share your thoughts and updates with rich formatting and media support.</p>
+      </div>
+      <div className="featureCard">
+        <div className="featureIcon"><i className="fas fa-comments"></i></div>
+        <h3>Live Group Chat</h3>
+        <p>Engage in real-time discussions with your community members.</p>
+      </div>
+      <div className="featureCard">
+        <div className="featureIcon"><i className="fas fa-users"></i></div>
+        <h3>Member Directory</h3>
+        <p>Find like-minded individuals by interests, skills, and location.</p>
+      </div>
+      <div className="featureCard">
+        <div className="featureIcon"><i className="fas fa-images"></i></div>
+        <h3>Multimedia Support</h3>
+        <p>Upload images, videos, and documents to express yourself fully.</p>
+      </div>
+    </div>
+  </section>
 
-      <section className="dashboard">
-        <div className="dashboardContainer">
-          <div className="feed">
-            <h2>Community Activity</h2>
-            {posts.length > 0 ? (
-              posts.map((post) => (
-                <div className="post" key={post.id}>
-                  <div className="postHeader">
-                    <div className="postUser">
-                      {post.user.username.slice(0, 1).toUpperCase()}
-                    </div>
-                    <div>
-                      <h4>@{post.user.username}</h4>
-                      <div className="postTime">{post.created_at} ago</div>
-                    </div>
-                  </div>
-                  <div className="postContent">
-                    <p>{post.content}</p>
-                  </div>
-                  {post.image && (
-                    <img src={post.image.url} alt="Post image" className="postImage" />
-                  )}
+  {/* DASHBOARD */}
+  <section className="dashboard">
+    <div className="dashboardContainer">
+      <div className="feed">
+        <h2>Community Activity</h2>
+        {posts.length > 0 ? (
+          posts.map((post) => (
+            <div className="post" key={post.id}>
+              <div className="postHeader">
+                <div className="postUser">
+                  {post.user.username.slice(0, 1).toUpperCase()}
                 </div>
-              ))
-            ) : (
-              <div className="emptyFeed">
-                <p>No posts yet. Be the first to share something!</p>
-                <Link href="/posts" className="btn">Create Post</Link>
-              </div>
-            )}
-          </div>
-
-          <div className="sidebar">
-            <div className="card">
-              <h3>Discover More</h3>
-              <form method="get" action="/search" className="searchBox">
-                <input type="text" name="q" placeholder="Search users, posts, groups..." />
-              </form>
-            </div>
-
-            <div className="card">
-              <h3>Trending Topics</h3>
-              <ul className="trendingList">
-                <li><Link href="#">Technology</Link></li>
-                <li><Link href="#">StartupLife</Link></li>
-                <li><Link href="#">Photography</Link></li>
-                <li><Link href="#">RemoteWork</Link></li>
-                <li><Link href="#">Sustainability</Link></li>
-              </ul>
-            </div>
-
-            <div className="card">
-              <h3>Community Stats</h3>
-              <div className="statsGrid">
-                <div className="statItem">
-                  <div className="statNumber">1.2K</div>
-                  <div className="statLabel">Members</div>
-                </div>
-                <div className="statItem">
-                  <div className="statNumber">543</div>
-                  <div className="statLabel">Posts</div>
-                </div>
-                <div className="statItem">
-                  <div className="statNumber">87</div>
-                  <div className="statLabel">Groups</div>
-                </div>
-                <div className="statItem">
-                  <div className="statNumber">24</div>
-                  <div className="statLabel">Events</div>
+                <div>
+                  <h4>@{post.user.username}</h4>
+                  <div className="postTime">{post.created_at} ago</div>
                 </div>
               </div>
+              <div className="postContent">
+                <p>{post.content}</p>
+              </div>
+              {post.image && (
+                <img src={post.image.url} alt="Post image" className="postImage" />
+              )}
+            </div>
+          ))
+        ) : (
+          <div className="emptyFeed">
+            <p>No posts yet. Be the first to share something!</p>
+            <Link href="/posts" className="btn">Create Post</Link>
+          </div>
+        )}
+      </div>
+
+      <div className="sidebar">
+        <div className="card">
+          <h3>Discover More</h3>
+          <form method="get" action="/search" className="searchBox">
+            <input type="text" name="q" placeholder="Search users, posts, groups..." />
+          </form>
+        </div>
+
+        <div className="card">
+          <h3>Trending Topics</h3>
+          <ul className="trendingList">
+            <li><Link href="#">Technology</Link></li>
+            <li><Link href="#">StartupLife</Link></li>
+            <li><Link href="#">Photography</Link></li>
+            <li><Link href="#">RemoteWork</Link></li>
+            <li><Link href="#">Sustainability</Link></li>
+          </ul>
+        </div>
+
+        <div className="card">
+          <h3>Community Stats</h3>
+          <div className="statsGrid">
+            <div className="statItem">
+              <div className="statNumber">1.2K</div>
+              <div className="statLabel">Members</div>
+            </div>
+            <div className="statItem">
+              <div className="statNumber">543</div>
+              <div className="statLabel">Posts</div>
+            </div>
+            <div className="statItem">
+              <div className="statNumber">87</div>
+              <div className="statLabel">Groups</div>
+            </div>
+            <div className="statItem">
+              <div className="statNumber">24</div>
+              <div className="statLabel">Events</div>
             </div>
           </div>
         </div>
-      </section>
-    </>
+      </div>
+    </div>
+  </section>
+
+  {/* NEW SECTIONS */}
+  <section className="vision">
+    <div className="container">
+      <h2>Empowering Meaningful Connections</h2>
+      <p>
+        Our platform is more than just a space—it's a movement to connect people with purpose.
+        We believe in nurturing knowledge-sharing, collaboration, and social growth in a unified digital environment.
+      </p>
+    </div>
+  </section>
+
+  <section className="useCases">
+    <div className="container">
+      <h2>Who Is This For?</h2>
+      <div className="useCasesGrid">
+        <div className="useCase">
+          <h3>Creators & Influencers</h3>
+          <p>Build a thriving community around your personal brand.</p>
+        </div>
+        <div className="useCase">
+          <h3>Startups & SaaS</h3>
+          <p>Engage your users, gather feedback, and offer support.</p>
+        </div>
+        <div className="useCase">
+          <h3>Educators & Coaches</h3>
+          <p>Run cohorts, mentorship, and online classrooms with group discussions.</p>
+        </div>
+        <div className="useCase">
+          <h3>Internal Teams</h3>
+          <p>Foster better internal communication and team engagement.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section className="highlightFeatures">
+    <div className="container">
+      <h2>Platform Highlights</h2>
+      <ul>
+        <li>🧠 Structured spaces with roles, permissions, and group visibility</li>
+        <li>💼 Built-in analytics to track engagement and growth</li>
+        <li>🔗 Deep integrations with Slack, Discord, Zapier, and more</li>
+        <li>🧩 Fully customizable appearance to match your brand</li>
+        <li>🌎 Public, private, and secret communities</li>
+      </ul>
+    </div>
+  </section>
+
+  <section className="testimonials">
+    <div className="container">
+      <h2>What Our Community Says</h2>
+      <div className="testimonialCard">
+        <p>“This platform has transformed how I interact with my audience. It’s clean, powerful, and truly community-focused.”</p>
+        <span>- Aarya, Creator</span>
+      </div>
+      <div className="testimonialCard">
+        <p>“Our startup grew engagement by 3x since moving our community here. Highly recommend!”</p>
+        <span>- Rahul, SaaS Founder</span>
+      </div>
+    </div>
+  </section>
+
+  <section className="integrations">
+    <div className="container">
+      <h2>Integrates With Your Workflow</h2>
+      <p>Connect with tools you already use like Zoom, Slack, Google Calendar, Notion, and more.</p>
+      <img src="/images/integrations.png" alt="Integrations" style={{ maxWidth: '100%', marginTop: '1rem' }} />
+    </div>
+  </section>
+
+  <section className="ctaFinal">
+    <div className="container">
+      <h2>Ready to Build Your Community?</h2>
+      <p>Start for free, no credit card required.</p>
+      <Link href="/communities/create_community" className="btn">Get Started Now</Link>
+    </div>
+  </section>
+
+  <footer className="footer">
+    <div className="container">
+      <p>© 2025 SocialConnect. Built with ❤️</p>
+      <div className="footerLinks">
+        <Link href="/about">About</Link>
+        <Link href="/help-support">Help & Support</Link>
+        <Link href="/settings">Settings</Link>
+      </div>
+    </div>
+  </footer>
+</>
+
   );
 }
 

@@ -9,13 +9,12 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework import generics
 from rest_framework import status
 from rest_framework.views import APIView
-from django.shortcuts import get_object_or_404
 from rest_framework import generics, permissions
 from .models import Post, Comment, Community
 from .serializers import PostSerializer, CommunitySerializer
 from django.views.decorators.csrf import ensure_csrf_cookie
 from .serializers import ProfileSerializer
-from .models import Profile, FriendRequest
+from .models import Profile, FriendRequest, Friendship
 from .models import UserProfile
 from .serializers import PrivacySerializer, BlockUserSerializer, UserSerializer
 from .models import Notification
@@ -24,10 +23,13 @@ from django.core.exceptions import PermissionDenied
 from rest_framework.decorators import parser_classes
 from rest_framework.decorators import api_view, permission_classes, parser_classes
 from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import get_object_or_404
 from rest_framework.parsers import MultiPartParser, FormParser
 import traceback
 import json
 from rest_framework.generics import RetrieveAPIView
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 # -------------------- Auth --------------------
@@ -76,7 +78,7 @@ def user_view(request):
         return JsonResponse({'isAuthenticated': False}, status=401)
 
     return JsonResponse({
-        'id': request.user.id,  # <-- Add this line
+        'id': request.user.id,
         'username': request.user.username,
         'email': request.user.email,
     })
@@ -87,9 +89,14 @@ def current_user(request):
         return Response({'id': request.user.id, 'username': request.user.username})
     return Response({'detail': 'Not authenticated'}, status=403)
 
-    
+@receiver(post_save, sender=User)
+def create_or_update_user_profile(sender, instance, created, **kwargs):
+    if created:
+        UserProfile.objects.create(user=instance)
+    instance.profile.save()
+
 @api_view(['GET'])
-@permission_classes([AllowAny])  # ← TEMPORARY for testing
+@permission_classes([AllowAny])
 def all_users(request):
     users = User.objects.all()
     data = [{"id": user.id, "username": user.username} for user in users]
@@ -101,6 +108,60 @@ def registered_users(request):
     profiles = Profile.objects.select_related('user').all()
     serializer = ProfileSerializer(profiles, many=True)
     return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_friends(request):
+    friendships = Friendship.objects.filter(from_user=request.user)
+    friends = [{'id': f.to_user.id, 'username': f.to_user.username} for f in friendships]
+    return Response(friends)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def friends_list_view(request):
+    friendships = Friendship.objects.filter(from_user=request.user)
+    friends = []
+
+    for friendship in friendships:
+        friend = friendship.to_user
+        profile = getattr(friend, 'profile', None)
+
+        try:
+            profile_image_url = (
+                profile.profile_image.url if profile and profile.profile_image and hasattr(profile.profile_image, 'url') else None
+            )
+        except Exception:
+            profile_image_url = None
+
+        friends.append({
+            'id': friend.id,
+            'username': friend.username,
+            'email': friend.email,
+            'profile_picture': profile_image_url,  # frontend expects 'profile_picture'
+            'friend_since': friendship.created_at.strftime('%Y-%m-%d') if hasattr(friendship, 'created_at') else None,
+        })
+
+    return Response(friends)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def remove_friend(request, friend_id):
+    try:
+        friend = User.objects.get(id=friend_id)
+
+        # Remove both sides of the friendship
+        Friendship.objects.filter(from_user=request.user, to_user=friend).delete()
+        Friendship.objects.filter(from_user=friend, to_user=request.user).delete()
+
+        Notification.objects.create(
+            user=friend,
+            message=f"{request.user.username} removed you from their friends."
+        )
+
+        return Response({"message": "Friend removed successfully."})
+    except User.DoesNotExist:
+        return Response({"error": "User not found."}, status=404)
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
@@ -155,6 +216,33 @@ def block_user(request):
         except User.DoesNotExist:
             return Response({"message": "User not found."}, status=404)
     return Response(serializer.errors, status=400)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def blocked_users(request):
+    profile, _ = UserProfile.objects.get_or_create(user=request.user)
+    blocked = profile.blocked_users.all()
+    return Response([
+        {"id": user.id, "username": user.username}
+        for user in blocked
+    ])
+
+# views.py
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def unblock_user(request):
+    username = request.data.get("username")
+    if not username:
+        return Response({"error": "Username required"}, status=400)
+    try:
+        to_unblock = User.objects.get(username=username)
+        profile = UserProfile.objects.get(user=request.user)
+        profile.blocked_users.remove(to_unblock)
+        return Response({"message": f"User '{username}' unblocked."})
+    except User.DoesNotExist:
+        return Response({"message": "User not found."}, status=404)
+    except UserProfile.DoesNotExist:
+        return Response({"message": "Profile not found."}, status=404)
 
 
 
@@ -253,10 +341,17 @@ def delete_post(request, post_id):
         if post.user != request.user:
             return Response({'error': 'You do not have permission to delete this post.'}, status=403)
 
+        # Notify the user themselves
+        Notification.objects.create(
+            user=request.user,
+            message=f"You deleted your post: \"{post.content[:30]}...\"" if post.content else "You deleted a post."
+        )
+
         post.delete()
         return Response({'success': True})
     except Post.DoesNotExist:
         return Response({'error': 'Post not found'}, status=404)
+
     
 # -------------------- Communities --------------------
 
@@ -363,8 +458,16 @@ class DeleteCommunityView(generics.DestroyAPIView):
         community = self.get_object()
         if community.created_by != request.user:
             return Response({'error': 'Not allowed'}, status=403)
+
+        # Notify creator before deleting
+        Notification.objects.create(
+            user=request.user,
+            message=f"You deleted the community '{community.name}'."
+        )
+
         community.delete()
         return Response({'message': 'Deleted'}, status=204)
+
     
 class EditCommunityView(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -378,10 +481,18 @@ class EditCommunityView(APIView):
             serializer = CommunitySerializer(community, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
+
+                # Notify the user about the update
+                Notification.objects.create(
+                    user=request.user,
+                    message=f"You edited the community '{community.name}'."
+                )
+
                 return Response(serializer.data)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Community.DoesNotExist:
             return Response({'detail': 'Community not found'}, status=status.HTTP_404_NOT_FOUND)
+
 
 class AddCommunityMembersView(generics.UpdateAPIView):
     queryset = Community.objects.all()
@@ -468,6 +579,64 @@ def search_view(request):
         'communities': community_data,
         'sent_requests': list(sent_requests)
     })
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def send_friend_request(request):
+    user_id = request.data.get("user_id")
+
+    if not user_id:
+        return Response({"error": "user_id is required"}, status=400)
+
+    if int(user_id) == request.user.id:
+        return Response({"error": "You can't send a request to yourself"}, status=400)
+
+    receiver = get_object_or_404(User, id=user_id)
+
+    # Check for duplicates
+    if FriendRequest.objects.filter(sender=request.user, receiver=receiver, is_active=True).exists():
+        return Response({"error": "Friend request already sent"}, status=400)
+
+    friend_request = FriendRequest.objects.create(sender=request.user, receiver=receiver)
+
+    Notification.objects.create(
+        user=receiver,
+        message=f"{request.user.username} sent you a friend request",
+        type="friend_request",
+        request_id=friend_request.id
+    )
+
+    return Response({"message": "Friend request sent"}, status=201)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def respond_to_friend_request(request, pk):
+    action = request.data.get("action")
+
+    try:
+        friend_request = FriendRequest.objects.get(id=pk, receiver=request.user)
+    except FriendRequest.DoesNotExist:
+        return Response({"error": "Friend request not found."}, status=404)
+
+    if action == "accept":
+        # Create a bidirectional friendship
+        Friendship.objects.get_or_create(from_user=request.user, to_user=friend_request.sender)
+        Friendship.objects.get_or_create(from_user=friend_request.sender, to_user=request.user)
+
+        # Delete friend request and related notification
+        friend_request.delete()
+        Notification.objects.filter(request_id=pk, user=request.user).delete()
+
+        return Response({"message": "Friend request accepted."})
+
+    elif action == "cancel":
+        friend_request.delete()
+        Notification.objects.filter(request_id=pk, user=request.user).delete()
+        return Response({"message": "Friend request canceled."})
+
+    return Response({"error": "Invalid action."}, status=400)
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])

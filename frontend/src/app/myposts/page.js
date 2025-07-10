@@ -1,4 +1,5 @@
 "use client";
+import './page.css';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
@@ -54,13 +55,13 @@ export default function MyPosts() {
   if (loading) return <div>Loading your posts...</div>;
 
   return (
-    <div>
+    <div className="container">
       <h2>My Posts</h2>
       {myPosts.length === 0 ? (
         <p>No posts yet.</p>
       ) : (
         myPosts.map(post => (
-          <div key={post.id} style={{ position: 'relative', marginBottom: '2rem', borderBottom: '1px solid #ccc', padding: '1rem 0' }}>
+          <div key={post.id} className="post" style={{ position: 'relative' }}>
             {/* Header with user and dropdown */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <p><strong>{post.user.username}</strong></p>
@@ -87,13 +88,13 @@ export default function MyPosts() {
             </div>
 
             <p>{post.content}</p>
-            {post.image && <img src={post.image} alt="Post" style={{ width: '100%', maxWidth: '500px' }} />}
+            {post.image && <img src={post.image} alt="Post" className="postImage" />}
             <p><small>Posted on {new Date(post.created_at).toLocaleString()}</small></p>
 
             <p><strong>{post.likes_count}</strong> likes</p>
 
-            <div>
-              <strong>Comments:</strong>
+            <div className="comments">
+              <h4>Comments:</h4>
               {post.comments && post.comments.length > 0 ? (
                 post.comments.map((comment, idx) => (
                   <div key={idx} style={{ paddingLeft: '1rem' }}>

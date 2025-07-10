@@ -1,9 +1,8 @@
 'use client'
-
+import './page.css'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import './page.css'
 
 export default function CommunitiesPage() {
   const [communities, setCommunities] = useState([])
@@ -121,15 +120,16 @@ export default function CommunitiesPage() {
             )}
             <div className="community-header">
               <img
-                src={
-                  community.profile_photo
-                    ? `http://localhost:8000${community.profile_photo}`
-                    : '/default_community.jpg'
-                }
-                alt="Community"
-                className="community-image"
-                onError={(e) => { e.target.src = '/default_community.jpg' }}
-              />
+  src={
+    community.profile_photo
+      ? community.profile_photo  // use full URL as-is
+      : '/images/default-profile.jpg'
+  }
+  alt="Community"
+  className="community-image"
+  onError={(e) => { e.target.src = '/images/default-profile.jpg' }}
+/>
+
               <h3>
                 <Link href={`/communities/${community.id}/chat`}>
                   {community.name}

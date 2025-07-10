@@ -1,7 +1,7 @@
 'use client'
+import './page.css'
 
-import { useState, useEffect } from 'react'
-import './page.css' 
+import { useState, useEffect } from 'react' 
 
 export default function UsersPage() {
   const [profiles, setProfiles] = useState([])

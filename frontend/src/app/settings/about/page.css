@@ -1,0 +1,49 @@
+.page-container {
+  max-width: 750px;
+  margin: 3rem auto;
+  padding: 2rem;
+  font-family: 'Inter', sans-serif;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+}
+
+.page-container h1 {
+  font-size: 2.2rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  color: #1a1a2e;
+}
+
+.page-container h2 {
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin-top: 2rem;
+  color: #333;
+}
+
+.page-container ul {
+  font-size: 1.15rem;
+  line-height: 2;
+  padding-left: 1.5rem;
+}
+
+.page-container p {
+  font-size: 1.15rem;
+  line-height: 1.9;
+  margin-bottom: 1.8rem;
+  color: #444;
+}
+
+.page-container strong {
+  color: #1a1a2e;
+}
+
+.page-container a {
+  color: #6c63ff;
+  text-decoration: none;
+}
+
+.page-container a:hover {
+  text-decoration: underline;
+}

@@ -86,6 +86,9 @@ export default function Navbar({ profileImage }) {
         <Link href="/communities" className={pathname.includes('/communities') ? 'active' : ''}>
           <i className="fas fa-users"></i> Communities
         </Link>
+        <Link href="/friends" className="nav-link">
+  <i className="fas fa-user-friends"></i> Friends
+</Link>
 
         <Link href="/search" className="nav-link">
           <i className="fas fa-search"></i>

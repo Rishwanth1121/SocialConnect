@@ -1,0 +1,77 @@
+/* styles/myposts.css */
+.container {
+  font-family: 'Inter', sans-serif;
+  background-color: #f5f5f5;
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+h1 {
+  margin-bottom: 20px;
+}
+
+.postForm,
+.post,
+.commentBox {
+  background: white;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.postForm textarea,
+.postForm input[type="file"],
+.commentBox textarea {
+  width: 100%;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 10px;
+  font-family: inherit;
+}
+
+.postImage {
+  max-width: 100%;
+  margin-top: 10px;
+  border-radius: 8px;
+}
+
+.btn {
+  background: #6c63ff;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  display: inline-block;
+  text-align: center;
+  margin-right: 8px;
+  font-family: inherit;
+}
+
+.btn:hover {
+  background: #5148e0;
+}
+
+.likeShare {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.comments {
+  margin-top: 15px;
+}
+
+.comments h4 {
+  margin-bottom: 10px;
+}
+
+.commentBox {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
