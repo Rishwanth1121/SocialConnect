@@ -5,12 +5,15 @@ import { usePathname } from 'next/navigation';
 
 export default function ClientLayout({ children }) {
   const pathname = usePathname();
-  const hideNavbar = ["/login", "/signup"].includes(pathname);
+
+  // Hide navbar on these routes (use startsWith to cover dynamic segments too)
+  const HIDDEN_ROUTES = ["/login", "/register"];
+  const hideNavbar = HIDDEN_ROUTES.some(route => pathname.startsWith(route));
 
   return (
     <>
       {!hideNavbar && <Navbar />}
-      {children}
+      <main>{children}</main>
     </>
   );
 }

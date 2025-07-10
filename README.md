@@ -97,6 +97,66 @@ npm run dev
 🌐 API Base URL
 http://localhost:8000/api/
 
+Login page:
 
-![Home Page](./frontend/public/images/home-bg.jpg)
+![Login Page](./frontend/public/images/login1.jpg)
+
+Register page:
+
+![Register Page](./frontend/public/images/register1.jpg)
+
+Home page:
+
+![Home Page](./frontend/public/images/home1.jpg)
+![Home Page](./frontend/public/images/home2.jpg)
+![Home Page](./frontend/public/images/home3.jpg)
+![Home Page](./frontend/public/images/home4.jpg)
+![Home Page](./frontend/public/images/home5.jpg)
+![Home Page](./frontend/public/images/home6.jpg)
+
+Posts page:
+
+![Posts Page](./frontend/public/images/posts1.jpg)
+![Posts Page](./frontend/public/images/posts2.jpg)
+
+Communities page:
+
+![Communities Page](./frontend/public/images/communities1.jpg)
+
+Create_community page:
+
+![Create_community Page](./frontend/public/images/create_community1.jpg)
+![Create_community Page](./frontend/public/images/create_community1.jpg)
+
+Friends page:
+
+![Friends Page](./frontend/public/images/friends1.jpg)
+
+Search page:
+
+![Search Page](./frontend/public/images/search1.jpg)
+
+Notifications page:
+
+![Notifications Page](./frontend/public/images/notifications1.jpg)
+
+Profile_icon page:
+
+![Profile Page](./frontend/public/images/profile_icon1.jpg)
+
+Profile page:
+
+![Profile Page](./frontend/public/images/profile1.jpg)
+
+Edit_profile page:
+
+![Edit_profile Page](./frontend/public/images/edit_profile1.jpg)
+
+Settings page:
+
+![Settings Page](./frontend/public/images/settings1.jpg)
+
+Users page:
+
+![Users Page](./frontend/public/images/users1.jpg)
 

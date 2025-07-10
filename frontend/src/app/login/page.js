@@ -1,10 +1,10 @@
 'use client';
+import './page.css';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
-import './page.css';
 import { login, getUser, getCsrfToken } from '@/lib/api';
 
 export default function LoginPage() {
