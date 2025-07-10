@@ -99,64 +99,64 @@ http://localhost:8000/api/
 
 Login page:
 
-![Login Page](./frontend/public/images/login1.jpg)
+![Login Page](./frontend/public/images/login1.png)
 
 Register page:
 
-![Register Page](./frontend/public/images/register1.jpg)
+![Register Page](./frontend/public/images/register1.png)
 
 Home page:
 
-![Home Page](./frontend/public/images/home1.jpg)
-![Home Page](./frontend/public/images/home2.jpg)
-![Home Page](./frontend/public/images/home3.jpg)
-![Home Page](./frontend/public/images/home4.jpg)
-![Home Page](./frontend/public/images/home5.jpg)
-![Home Page](./frontend/public/images/home6.jpg)
+![Home Page](./frontend/public/images/home1.png)
+![Home Page](./frontend/public/images/home2.png)
+![Home Page](./frontend/public/images/home3.png)
+![Home Page](./frontend/public/images/home4.png)
+![Home Page](./frontend/public/images/home5.png)
+![Home Page](./frontend/public/images/home6.png)
 
 Posts page:
 
-![Posts Page](./frontend/public/images/posts1.jpg)
-![Posts Page](./frontend/public/images/posts2.jpg)
+![Posts Page](./frontend/public/images/posts1.png)
+![Posts Page](./frontend/public/images/posts2.png)
 
 Communities page:
 
-![Communities Page](./frontend/public/images/communities1.jpg)
+![Communities Page](./frontend/public/images/communities1.png)
 
 Create_community page:
 
-![Create_community Page](./frontend/public/images/create_community1.jpg)
-![Create_community Page](./frontend/public/images/create_community1.jpg)
+![Create_community Page](./frontend/public/images/create_community1.png)
+![Create_community Page](./frontend/public/images/create_community1.png)
 
 Friends page:
 
-![Friends Page](./frontend/public/images/friends1.jpg)
+![Friends Page](./frontend/public/images/friends1.png)
 
 Search page:
 
-![Search Page](./frontend/public/images/search1.jpg)
+![Search Page](./frontend/public/images/search1.png)
 
 Notifications page:
 
-![Notifications Page](./frontend/public/images/notifications1.jpg)
+![Notifications Page](./frontend/public/images/notifications1.png)
 
 Profile_icon page:
 
-![Profile Page](./frontend/public/images/profile_icon1.jpg)
+![Profile Page](./frontend/public/images/profile_icon1.png)
 
 Profile page:
 
-![Profile Page](./frontend/public/images/profile1.jpg)
+![Profile Page](./frontend/public/images/profile1.png)
 
 Edit_profile page:
 
-![Edit_profile Page](./frontend/public/images/edit_profile1.jpg)
+![Edit_profile Page](./frontend/public/images/edit_profile1.png)
 
 Settings page:
 
-![Settings Page](./frontend/public/images/settings1.jpg)
+![Settings Page](./frontend/public/images/settings1.png)
 
 Users page:
 
-![Users Page](./frontend/public/images/users1.jpg)
+![Users Page](./frontend/public/images/users1.png)
 
