@@ -2,7 +2,7 @@
 
 **SocialConnect** is a full-stack community-centric social media platform designed to connect like-minded individuals. Developed using **Django (REST Framework)** and **Next.js**, this platform supports features like posting content, managing user profiles, joining communities, commenting, and real-time notifications.
 
----
+-------
 
 ## ✨ Features
 
@@ -18,14 +18,26 @@
 - 📦 Django-Based Media Handling
 - 🛡️ Block Users, Set Profile & Post Privacy
 
----
+-------
 
 ## 📁 Folder Structure
 
+Project:
+
+![Project](./frontend/public/images/project1.png)
 
 
+Frontend:
 
----
+![Frontend](./frontend/public/images/frontend1.png)
+
+
+Backend:
+
+![Backend](./frontend/public/images/backend1.png)
+
+
+-------
 
 ## 🚀 Technologies Used
 
@@ -39,11 +51,11 @@
 ### 🧠 Backend:
 - Django
 - Django REST Framework
-- SQLite (default) / MySQL (optional)
+- SQLite  / MySQL 
 - CORS Headers
 - JWT/Session Authentication
 
----
+-------
 
 ### ⚙️ Prerequisites:
 - Python 3.10+
@@ -51,19 +63,19 @@
 - MySQL (optional) or SQLite
 - VS Code or any IDE
 
----
+-------
 
 ## ⚙️ Setup Instructions
 ```bash
 ### 🔧 Backend (Django)
 
-# Navigate to backend directory
-cd social_platform
-
 # Create virtual environment
 python -m venv venv
 venv\Scripts\activate   # On Windows
 # source venv/bin/activate   # On Linux/macOS
+
+# Navigate to backend directory
+cd social_platform
 
 # Install dependencies
 pip install -r requirements.txt
@@ -75,27 +87,40 @@ python manage.py migrate
 # Run server
 python manage.py runserver
 
-# Install dependencies
-npm install
+#Create Superuser
+python manage.py createsuperuser
 
+# Install dependencies
+npm install:
+Django
+djangorestframework
+django-cors-headers
+channels (for WebSocket chat)
+Pillow (image handling)
+mysqlclient or mysql-connector-python (for MySQL)
+daphne(chat system)
 
 # Navigate to frontend directory
 cd ../frontend
-
-# Install dependencies
-npm install
 
 # Start development server
 npm run dev
 
 # Steps to access group chat
+Instead of python manage.py runserver
 
-
-
-```
+Run:
+daphne social_platform.asgi:application
+(or)
+$env:DJANGO_SETTINGS_MODULE="social_platform.settings"; daphne social_platform.asgi:application
 
 🌐 API Base URL
 http://localhost:8000/api/
+
+🌐 Frontend Base URL
+http://localhost:3000
+
+------
 
 Login page:
 
