@@ -101,9 +101,11 @@ Login page:
 
 ![Login Page](./frontend/public/images/login1.png)
 
+
 Register page:
 
 ![Register Page](./frontend/public/images/register1.png)
+
 
 Home page:
 
@@ -114,49 +116,103 @@ Home page:
 ![Home Page](./frontend/public/images/home5.png)
 ![Home Page](./frontend/public/images/home6.png)
 
+
 Posts page:
 
 ![Posts Page](./frontend/public/images/posts1.png)
 ![Posts Page](./frontend/public/images/posts2.png)
 
+
 Communities page:
 
 ![Communities Page](./frontend/public/images/communities1.png)
 
-Create_community page:
-
-![Create_community Page](./frontend/public/images/create_community1.png)
-![Create_community Page](./frontend/public/images/create_community1.png)
 
 Friends page:
 
 ![Friends Page](./frontend/public/images/friends1.png)
 
+
 Search page:
 
 ![Search Page](./frontend/public/images/search1.png)
+
 
 Notifications page:
 
 ![Notifications Page](./frontend/public/images/notifications1.png)
 
-Profile_icon page:
-
-![Profile Page](./frontend/public/images/profile_icon1.png)
 
 Profile page:
 
 ![Profile Page](./frontend/public/images/profile1.png)
 
+
 Edit_profile page:
 
 ![Edit_profile Page](./frontend/public/images/edit_profile1.png)
+
 
 Settings page:
 
 ![Settings Page](./frontend/public/images/settings1.png)
 
+
 Users page:
 
 ![Users Page](./frontend/public/images/users1.png)
+
+-------
+
+Accessing private chat:
+
+Here are the steps to access Private Chat in your SocialConnect platform.
+
+🧑‍🤝‍🧑 1. Go to the Friends Page
+Navigate to the "Friends" page via the top navbar. You’ll see a list of all your accepted friends.
+
+💬 2. Click on a Friend's Username
+From the friends list, click on the username of the person you want to chat with. This action will redirect you to the private chat page with that user.
+
+📥 3. Start Chatting
+The private chat interface will load where you can start texting.
+
+-------
+
+Accessing group chat:
+
+Here are the steps to access Group Chat in your SocialConnect platform:
+
+👥 1. Go to the Communities Page
+Use the top navigation bar to go to /communities. This page shows all communities you are part of.
+
+🏘️ 2. Click on a Community Name
+Click on the name or card of the community you want to chat in. You’ll be redirected to that community’s dedicated group chat page.
+
+💬 3. Start Messaging
+You can now send real-time messages to all community members
+
+------
+
+✅ Contributing
+We welcome contributions! If you’d like to improve the project, please fork the repo and submit a pull request. Be sure to follow the contribution guidelines.
+
+🛠 Future Enhancements
+Dark mode support
+Message reactions in chat
+Email verification
+Admin dashboard
+
+🙌 Acknowledgments
+Thanks to the open-source community and tools that made this platform possible.
+
+📫 Contact
+For queries or collaboration:
+Developer: Rishwanth M, Gowtham, Sai Pavan
+Email: rishwanth1121@gmail.com, gowthamnikhil10@gmail.com
+GitHub: https://github.com/Rishwanth1121
+
+⭐️ Give a Star!
+If you like the project, don't forget to ⭐️ the repository!
+
 
