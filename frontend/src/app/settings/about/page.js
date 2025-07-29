@@ -8,7 +8,7 @@ export default function About() {
 
       <p>
         <strong>SocialConnect</strong> is a next-generation social platform designed to help people connect, communicate, and collaborate in meaningful ways.
-        Whether you're looking to make new friends, join interest-based communities, or express yourself through posts and discussions, SocialConnect provides a friendly and secure space to do it all.
+        Whether you are looking to make new friends, join interest-based communities, or express yourself through posts and discussions, SocialConnect provides a friendly and secure space to do it all.
       </p>
 
       <h2>🚀 Core Features</h2>

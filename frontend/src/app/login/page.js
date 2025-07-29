@@ -86,7 +86,7 @@ export default function LoginPage() {
           </form>
 
           <div className="footerLink">
-            Don't have an account?
+            Dont have an account?
             <button onClick={() => router.push('/register')}>Sign up</button>
           </div>
 

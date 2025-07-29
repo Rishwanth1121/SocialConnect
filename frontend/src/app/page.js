@@ -113,7 +113,7 @@ function HomePageContent({ posts = [] }) {
     <div className="container">
       <h2>Empowering Meaningful Connections</h2>
       <p>
-        Our platform is more than just a space, it's a movement to connect people with purpose.
+        Our platform is more than just a space, it is a movement to connect people with purpose.
         We believe in nurturing knowledge, sharing, collaboration, and social growth in a unified digital environment.
       </p>
     </div>

@@ -125,7 +125,7 @@ export default function SearchPage() {
         </button>
       </form>
 
-      {query && <h3 style={{ marginTop: "1rem" }}>Results for "{query}"</h3>}
+      {query && <h3 style={{ marginTop: "1rem" }}>Results for &quot;{query}&quot;</h3>}
 
       {isLoading ? (
         <p>Loading...</p>
