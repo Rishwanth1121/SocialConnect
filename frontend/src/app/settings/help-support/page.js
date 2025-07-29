@@ -6,7 +6,7 @@ export default function HelpSupport() {
       </h1>
 
       <p style={{ fontSize: "1.2rem", lineHeight: "1.9", marginBottom: "2rem" }}>
-        We're here to help you make the most out of SocialConnect. Whether you need assistance with your account, reporting a bug, or understanding how a feature works, this page provides the help you need.
+        We are here to help you make the most out of SocialConnect. Whether you need assistance with your account, reporting a bug, or understanding how a feature works, this page provides the help you need.
       </p>
 
       <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", marginTop: "1.5rem" }}>
