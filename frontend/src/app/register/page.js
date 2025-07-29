@@ -89,7 +89,7 @@ export default function RegisterPage() {
 
       <div 
         className="rightSection"
-        style={{ backgroundImage: "url('/images/login_illustration.png')" }}
+        style={{ backgroundImage: "url('/images/login.jpg')" }}
       />
     </div>
   );

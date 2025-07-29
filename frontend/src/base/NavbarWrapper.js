@@ -9,7 +9,7 @@ export default function NavbarWrapper() {
   const [showNavbar, setShowNavbar] = useState(true);
 
   useEffect(() => {
-    const noNavbarPaths = ["/login", "/signup", "/forgot-password"];
+    const noNavbarPaths = ["/login", "/register", "/forgot-password"];
     setShowNavbar(!noNavbarPaths.includes(pathname));
   }, [pathname]);
 
